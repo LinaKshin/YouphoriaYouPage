@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>YOU — Lina S</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --red: #D32F2F;
+    --red-bright: #FF3B30;
+    --red-dim: #8B0000;
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #1a1a1a;
+    --bg4: #222222;
+    --border: #2a2a2a;
+    --text: #f0f0f0;
+    --text-dim: #888;
+    --text-muted: #555;
+    --green: #34C759;
+    --gold: #FFD60A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--bg2);
+    padding: 14px 18px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 2px solid var(--red);
+    background: var(--bg3);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; color: var(--red);
+  }
+  .header-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--text); }
+  .header-sub { font-size: 11px; color: var(--text-dim); font-weight: 500; }
+  .streak-badge {
+    background: var(--red);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 0 0 auto;
+    padding: 11px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .tab.active { color: var(--red-bright); border-bottom-color: var(--red-bright); }
+
+  /* MAIN */
+  .main { padding: 0 0 90px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin: 14px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .icon { color: var(--red); font-size: 16px; }
+  .card-body { padding: 14px 16px; }
+
+  /* DAILY SCORE */
+  .score-ring-wrap {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px;
+  }
+  .ring-container { position: relative; width: 90px; height: 90px; flex-shrink: 0; }
+  .ring-container svg { transform: rotate(-90deg); }
+  .ring-track { fill: none; stroke: var(--bg4); stroke-width: 8; }
+  .ring-fill { fill: none; stroke: var(--red); stroke-width: 8; stroke-linecap: round;
+    stroke-dasharray: 251; stroke-dashoffset: 100; transition: stroke-dashoffset 1s ease; }
+  .ring-score {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; color: var(--text);
+    line-height: 1;
+  }
+  .ring-label { font-size: 9px; color: var(--text-dim); text-align: center; margin-top: -2px; }
+  .score-breakdown { flex: 1; }
+  .score-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .score-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .score-item-label { font-size: 12px; color: var(--text-dim); flex: 1; }
+  .score-bar-bg { flex: 2; height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden; }
+  .score-bar-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
+
+  /* LEADERBOARD */
+  .lb-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .lb-item:last-child { border-bottom: none; }
+  .lb-rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; color: var(--text-dim); width: 24px; text-align: center;
+  }
+  .lb-rank.you { color: var(--red-bright); }
+  .lb-rank.gold { color: var(--gold); }
+  .lb-avatar {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bg4);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .lb-avatar.you { border: 2px solid var(--red); color: var(--red); }
+  .lb-name { font-size: 14px; font-weight: 600; flex: 1; }
+  .lb-name.you { color: var(--red-bright); }
+  .lb-pts { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-dim); }
+  .lb-pts.you { color: var(--red-bright); }
+
+  /* JOURNAL */
+  .journal-entry {
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--red-dim);
+  }
+  .journal-date { font-size: 10px; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-bottom: 6px; }
+  .journal-text { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+  .journal-entry.today { border-left-color: var(--red); }
+  .journal-entry.today .journal-text { color: var(--text); }
+
+  textarea {
+    width: 100%; background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 12px;
+    resize: none;
+    outline: none;
+    line-height: 1.6;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--red); }
+  textarea::placeholder { color: var(--text-muted); }
+
+  /* BUTTONS */
+  .btn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-red { background: var(--red); color: #fff; }
+  .btn-red:active { background: var(--red-dim); transform: scale(0.97); }
+  .btn-ghost { background: var(--bg3); color: var(--text-dim); border: 1px solid var(--border); }
+  .btn-ghost:active { background: var(--bg4); transform: scale(0.97); }
+  .btn-full { width: 100%; justify-content: center; }
+
+  /* CHECKLIST */
+  .check-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item.done { opacity: 0.45; }
+  .check-box {
+    width: 22px; height: 22px; border-radius: 6px;
+    border: 2px solid var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+    transition: all 0.2s;
+  }
+  .check-item.done .check-box { background: var(--green); border-color: var(--green); }
+  .check-box-inner { font-size: 12px; display: none; }
+  .check-item.done .check-box-inner { display: block; }
+  .check-label { flex: 1; }
+  .check-label-text { font-size: 14px; font-weight: 500; }
+  .check-item.done .check-label-text { text-decoration: line-through; }
+  .check-label-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .check-item.done .check-label-sub { text-decoration: line-through; }
+
+  /* GOALS */
+  .goal-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .goal-item:last-child { border-bottom: none; }
+  .goal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .goal-name { font-size: 14px; font-weight: 600; }
+  .goal-progress-text { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-dim); }
+  .progress-bar { height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--red); border-radius: 3px; transition: width 0.8s ease; }
+  .goal-deadline { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+  /* ROUTINE */
+  .routine-block {
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .routine-block-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px; letter-spacing: 1px;
+    color: var(--red); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .routine-step { display: flex; align-items: center; gap: 10px; padding: 7px 0; }
+  .routine-time { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); width: 38px; flex-shrink: 0; }
+  .routine-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red-dim); flex-shrink: 0; }
+  .routine-label { font-size: 13px; color: var(--text-dim); }
+
+  /* GRATITUDE */
+  .gratitude-prompt {
+    background: linear-gradient(135deg, var(--red-dim), #1a0000);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid var(--red-dim);
+  }
+  .gratitude-label { font-size: 10px; letter-spacing: 2px; color: var(--red-bright); font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+  .gratitude-q { font-size: 15px; font-weight: 600; line-height: 1.5; }
+
+  /* SLEEP */
+  .sleep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .sleep-card {
+    background: var(--bg3);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .sleep-card:active { border-color: var(--red); }
+  .sleep-icon { font-size: 24px; margin-bottom: 6px; }
+  .sleep-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .sleep-time { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--text); letter-spacing: 1px; }
+  .sleep-time.set { color: var(--red-bright); }
+
+  /* MOOD */
+  .mood-row { display: flex; justify-content: space-between; gap: 6px; }
+  .mood-btn {
+    flex: 1; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 4px;
+    cursor: pointer; text-align: center;
+    font-size: 20px; transition: all 0.2s;
+  }
+  .mood-btn.selected { border-color: var(--red); background: rgba(211,47,47,0.15); }
+  .mood-label { font-size: 9px; color: var(--text-muted); margin-top: 4px; }
+
+  /* INPUT */
+  input[type="text"], input[type="time"] {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  input:focus { border-color: var(--red); }
+  input::placeholder { color: var(--text-muted); }
+  input[type="time"] { font-family: 'DM Mono', monospace; }
+  input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.5); }
+
+  .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+  .input-row input { flex: 1; }
+
+  /* NAV */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 430px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 8px 0 20px;
+    z-index: 100;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer; padding: 4px 12px;
+    color: var(--text-muted);
+    font-size: 10px; font-weight: 600;
+    transition: color 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .nav-item.active { color: var(--red-bright); }
+  .nav-icon { font-size: 20px; }
+  .nav-center {
+    width: 54px; height: 54px; border-radius: 50%;
+    background: var(--red); display: flex; align-items: center; justify-content: center;
+    font-size: 24px; margin-top: -20px;
+    box-shadow: 0 0 20px rgba(211,47,47,0.5);
+    cursor: pointer; transition: transform 0.15s;
+  }
+  .nav-center:active { transform: scale(0.92); }
+
+  /* MISC */
+  .section-label {
+    font-size: 10px; letter-spacing: 2px; color: var(--text-muted);
+    text-transform: uppercase; font-weight: 700;
+    padding: 14px 14px 6px;
+  }
+  .toast {
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+    background: var(--red); color: #fff;
+    padding: 10px 20px; border-radius: 20px;
+    font-size: 13px; font-weight: 600;
+    z-index: 999; opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+  .divider { height: 1px; background: var(--border); margin: 0 14px; }
+  .row { display: flex; align-items: center; justify-content: space-between; }
+  .chip {
+    background: var(--bg4); border-radius: 20px;
+    padding: 4px 10px; font-size: 11px; color: var(--text-muted);
+    font-weight: 500;
+  }
+  .chip.red { background: rgba(211,47,47,0.2); color: var(--red-bright); }
+
+  /* POWER LIST */
+  .power-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .power-item:last-child { border-bottom: none; }
+  .power-priority {
+    width: 5px; border-radius: 3px; align-self: stretch; flex-shrink: 0;
+    min-height: 30px;
+  }
+  .p-high { background: var(--red); }
+  .p-med { background: #FF9500; }
+  .p-low { background: var(--text-muted); }
+  .power-text { flex: 1; font-size: 14px; font-weight: 500; }
+  .power-done .power-text { text-decoration: line-through; color: var(--text-muted); }
+  .power-check {
+    width: 24px; height: 24px; border-radius: 6px;
+    border: 2px solid var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0; transition: all 0.2s;
+  }
+  .power-done .power-check { background: var(--green); border-color: var(--green); }
+
+  /* AFFIRMATION */
+  .affirmation-box {
+    background: linear-gradient(135deg, #1a0000, var(--bg3));
+    border: 1px solid var(--red-dim);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .affirmation-text { font-size: 16px; font-weight: 600; line-height: 1.5; font-style: italic; }
+  .affirmation-sub { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+    z-index: 200; display: flex; align-items: flex-end;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--bg2); border-radius: 20px 20px 0 0;
+    padding: 20px; width: 100%;
+    transform: translateY(100%); transition: transform 0.3s;
+    border-top: 1px solid var(--border);
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1.5px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .modal-close { margin-left: auto; font-size: 20px; cursor: pointer; color: var(--text-muted); }
+
+  /* ANIM */
+  @keyframes pulse-red { 0%,100%{box-shadow:0 0 0 0 rgba(211,47,47,0.4)} 50%{box-shadow:0 0 0 8px rgba(211,47,47,0)} }
+  .pulse { animation: pulse-red 2s infinite; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .card { animation: fadeIn 0.4s ease both; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="avatar">LS</div>
+    <div>
+      <div class="header-title">YOU</div>
+      <div class="header-sub">Lina S · Friday, Mar 27</div>
+    </div>
+  </div>
+  <div class="streak-badge pulse" id="streakBadge">🔥 <span id="streakCount">7</span></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('today', this)">TODAY</div>
+  <div class="tab" onclick="switchTab('journal', this)">JOURNAL</div>
+  <div class="tab" onclick="switchTab('goals', this)">GOALS</div>
+  <div class="tab" onclick="switchTab('routine', this)">ROUTINE</div>
+  <div class="tab" onclick="switchTab('sleep', this)">SLEEP</div>
+  <div class="tab" onclick="switchTab('board', this)">BOARD</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TODAY TAB -->
+  <div class="section active" id="section-today">
+
+    <!-- Daily Score -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="icon">◈</span> DAILY SCORE</div>
+        <div class="chip red" id="totalScore">68 pts</div>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="ring-container">
+          <svg width="90" height="90" viewBox="0 0 90 90">
+            <circle class="ring-track" cx="45" cy="45" r="40"/>
+            <circle class="ring-fill" cx="45" cy="45" r="40" id="ringFill"/>
+          </svg>
+          <div class="ring-score" id="ringScore">68</div>
+        </div>
+        <div class="score-breakdown">
+          <div class="score-item">
+            <div class="score-dot" style="background:#34C759"></div>
+            <span class="score-item-label">Power List</span>
+            <div class="score-bar-bg"><div class="score-bar-fill" style="width:60%;background:#34C759"></div></div>
+          </div>
+          <div class="score-item">
+            <div class="score-dot" style="background:#FF3B30"></div>
+            <span class="score-item-label">Journal</span>
+            <div class="score-bar-bg"><div class="score-bar-fill" style="width:100%;background:#FF3B30" id="journalBar"></div></div>
+          </div>
+          <div class="score-item">
+            <div class="score-dot" style="background:#FF9500"></div>
+            <span class="score-item-label">Gratitude</span>
+            <div class="score-bar-bg"><div class="score-bar-fill" style="width:33%;background:#FF9500" id="gratBar"></div></div>
+          </div>
+          <div class="score-item">
+            <div class="score-dot" style="background:#AF52DE"></div>
+            <span class="score-item-label">Sleep</span>
+            <div class="score-bar-bg"><div class="score-bar-fill" style="width:80%;background:#AF52DE"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mood Check-In -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="icon">◉</span> MOOD CHECK-IN</div>
+        <span class="chip" id="moodSaved"></span>
+      </div>
+      <div class="card-body">
+        <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px;">How are you feeling right now?</div>
+        <div class="mood-row">
+          <div class="mood-btn" onclick="setMood(this,'😤','Fired Up')">😤<div class="mood-label">Fired Up</div></div>
+          <div class="mood-btn" onclick="setMood(this,'😌','Calm')">😌<div class="mood-label">Calm</div></div>
+          <div class="mood-btn" onclick="setMood(this,'😴','Tired')">😴<div class="mood-label">Tired</div></div>
+          <div class="mood-btn" onclick="setMood(this,'😤','Stressed')">😰<div class="mood-label">Stressed</div></div>
+          <div class="mood-btn" onclick="setMood(this,'⚡','In Flow')">⚡<div class="mood-label">In Flow</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Affirmation -->
+    <div class="affirmation-box" style="margin:14px;" id="affirmBox">
+      <div class="affirmation-text" id="affirmText">"She built her empire one disciplined day at a time."</div>
+      <div class="affirmation-sub">tap to refresh ↺</div>
+    </div>
+
+    <!-- COME HERE IF U FUCK UPWHILE RUNNING-->
+   
+
+    <!-- Quick Power List -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="icon">⚡</span> TODAY'S POWER LIST</div>
+        <span class="chip red" id="powerCount">2/5</span>
+      </div>
+      <div class="card-body" id="quickPowerList">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- Gratitude Quick -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="icon">♡</span> GRATITUDE</div>
+        <span class="chip" id="gratChip">1/3 done</span>
+      </div>
+      <div class="card-body">
+        <div class="gratitude-prompt">
+          <div class="gratitude-label">Today's prompt</div>
+          <div class="gratitude-q" id="gratPrompt">"What's one thing that's going right for you right now, no matter how small?"</div>
+        </div>
+        <div id="gratEntries">
+          <div class="journal-entry today" id="grat1"><div class="journal-date">GRATEFUL FOR #1</div><div class="journal-text" id="grat1Text">My family always showing up for me ❤️</div></div>
+          <div class="journal-entry" id="grat2" style="border-left-color:#333;display:none"></div>
+          <div class="journal-entry" id="grat3" style="border-left-color:#333;display:none"></div>
+        </div>
+        <div id="gratInputArea" style="margin-top:10px;">
+          <textarea id="gratInput" rows="2" placeholder="I'm grateful for..."></textarea>
+          <div style="margin-top:8px;text-align:right">
+            <button class="btn btn-red" onclick="addGratitude()">+ Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JOURNAL TAB -->
+  <div class="section" id="section-journal">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="icon">✎</span> TODAY'S ENTRY</div>
+        <span class="chip">Mar 27</span>
+      </div>
+      <div class="card-body">
+        <div style="margin-bottom:12px">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;">Your safe space. No judgment.</div>
+          <textarea id="journalToday" rows="7" placeholder="How's your mind today? What's been on your thoughts? Dump it all here...">Honestly been a solid day. Studied for econ for like 3 hours and actually felt good about it. Need to stop procrastinating on the internship apps though — gonna send 2 cold emails this weekend. Also finally meditated this morning which felt great.</textarea>
+        </div>
+        <div style="text-align:right;margin-bottom:4px"><button class="btn btn-red" onclick="saveJournal()">Save Entry</button></div>
+      </div>
+    </div>
+
+    <div class="section-label">PAST ENTRIES</div>
+    <div class="card">
+      <div class="card-body" style="padding:10px 16px;">
+        <div class="journal-entry" onclick="expandEntry(this)">
+          <div class="journal-date">MAR 25, 2026 · TUESDAY</div>
+          <div class="journal-text">Skipped the gym but got so much studying done. Tradeoffs I guess. Celina texted me about going to Barton Springs this weekend…</div>
+        </div>
+        <div class="journal-entry" onclick="expandEntry(this)">
+          <div class="journal-date">MAR 23, 2026 · SUNDAY</div>
+          <div class="journal-text">Sunday reset day. Cleaned my room, meal prepped, and actually got 8 hours of sleep for once. Feeling more in control lately.</div>
+        </div>
+        <div class="journal-entry" onclick="expandEntry(this)">
+          <div class="journal-date">MAR 20, 2026 · THURSDAY</div>
+          <div class="journal-text">Had a really productive call with a mentor. She said to stop waiting until I feel "ready" and just apply. So I did. Two apps sent.</div>
+        </div>
+        <div class="journal-entry" onclick="expandEntry(this)">
+          <div class="journal-date">MAR 18, 2026 · TUESDAY</div>
+          <div class="journal-text">Rough day. Bombed a practice interview. But Alex helped me do STAR method drills for an hour after. That's what real friends are.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOALS TAB -->
+  <div class="section" id="section-goals">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="icon">◎</span> ACTIVE GOALS</div>
+        <button class="btn btn-ghost" onclick="openGoalModal()" style="padding:6px 10px;font-size:11px;">+ ADD</button>
+      </div>
+      <div class="card-body" id="goalsList">
+        <div class="goal-item">
+          <div class="goal-top">
+            <div class="goal-name">🎯 Land a Summer Internship</div>
+            <div class="goal-progress-text">6/10</div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+          <div class="goal-deadline">Applications sent · Target: May 1, 2026</div>
+        </div>
+        <div class="goal-item">
+          <div class="goal-top">
+            <div class="goal-name">📚 Read 12 Books This Year</div>
+            <div class="goal-progress-text">3/12</div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div>
+          <div class="goal-deadline">Currently reading: Anna Karenina · Due: Dec 31</div>
+        </div>
+        <div class="goal-item">
+          <div class="goal-top">
+            <div class="goal-name">💪 Work Out 4x/Week</div>
+            <div class="goal-progress-text">2/4</div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+          <div class="goal-deadline">This week · Resets Sunday</div>
+        </div>
+        <div class="goal-item">
+          <div class="goal-top">
+            <div class="goal-name">💰 Save $2,000 by Summer</div>
+            <div class="goal-progress-text">$840/$2000</div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:42%"></div></div>
+          <div class="goal-deadline">42% there · Target: May 31, 2026</div>
+        </div>
+        <div class="goal-item">
+          <div class="goal-top">
+            <div class="goal-name">🧘 Meditate 30 Days Straight</div>
+            <div class="goal-progress-text">7/30</div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:23%"></div></div>
+          <div class="goal-deadline">Day 7 streak 🔥 · Keep going!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">COMPLETED</div>
+    <div class="card">
+      <div class="card-body" style="padding:10px 16px;">
+        <div class="check-item done" style="pointer-events:none">
+          <div class="check-box"><div class="check-box-inner">✓</div></div>
+          <div class="check-label">
+            <div class="check-label-text">Pass Econ midterm with A</div>
+            <div class="check-label-sub">Completed Mar 15, 2026 ✓</div>
+          </div>
+        </div>
+        <div class="check-item done" style="pointer-events:none">
+          <div class="check-box"><div class="check-box-inner">✓</div></div>
+          <div class="check-label">
+            <div class="check-label-text">Build personal portfolio website</div>
+            <div class="check-label-sub">Completed Feb 28, 2026 ✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROUTINE TAB -->
+  <div class="section" id="section-routine">
+
+    <!-- Morning -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="icon">☀</span> MORNING ROUTINE</div>
+        <div class="chip">6:30 AM</div>
+      </div>
+      <div class="card-body">
+        <div class="routine-block">
+          <div class="routine-block-title">☀ WAKE UP STACK</div>
+          <div id="morningRoutine">
+            <div class="routine-step"><span class="routine-time">6:30</span><div class="routine-dot"></div><span class="routine-label">Wake up — no snooze</span></div>
+            <div class="routine-step"><span class="routine-time">6:32</span><div class="routine-dot"></div><span class="routine-label">Make bed immediately</span></div>
+            <div class="routine-step"><span class="routine-time">6:35</span><div class="routine-dot"></div><span class="routine-label">Drink 16oz water</span></div>
+            <div class="routine-step"><span class="routine-time">6:40</span><div class="routine-dot"></div><span class="routine-label">Meditate — 5 to 10 min</span></div>
+            <div class="routine-step"><span class="routine-time">6:50</span><div class="routine-dot"></div><span class="routine-label">Journal / gratitude</span></div>
+            <div class="routine-step"><span class="routine-time">7:00</span><div class="routine-dot"></div><span class="routine-label">Get ready & breakfast</span></div>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-full" onclick="openRoutineModal('morning')">✎ Edit Morning Routine</button>
+      </div>
+    </div>
+
+    <!-- Evening -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="icon">🌙</span> EVENING ROUTINE</div>
+        <div class="chip">9:30 PM</div>
+      </div>
+      <div class="card-body">
+        <div class="routine-block">
+          <div class="routine-block-title">🌙 WIND DOWN STACK</div>
+          <div id="eveningRoutine">
+            <div class="routine-step"><span class="routine-time">9:30</span><div class="routine-dot"></div><span class="routine-label">No more screens (ideally)</span></div>
+            <div class="routine-step"><span class="routine-time">9:35</span><div class="routine-dot"></div><span class="routine-label">Skin care routine</span></div>
+            <div class="routine-step"><span class="routine-time">9:45</span><div class="routine-dot"></div><span class="routine-label">Review tomorrow's tasks</span></div>
+            <div class="routine-step"><span class="routine-time">9:55</span><div class="routine-dot"></div><span class="routine-label">Read — 20 min</span></div>
+            <div class="routine-step"><span class="routine-time">10:15</span><div class="routine-dot"></div><span class="routine-label">Lights out</span></div>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-full" onclick="openRoutineModal('evening')">✎ Edit Evening Routine</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLEEP TAB -->
+  <div class="section" id="section-sleep">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="icon">🌙</span> SLEEP SCHEDULE</div>
+        <span class="chip red" id="sleepDuration">7h 15m goal</span>
+      </div>
+      <div class="card-body">
+        <div class="sleep-grid">
+          <div class="sleep-card" onclick="openSleepModal('bed')">
+            <div class="sleep-icon">🛏</div>
+            <div class="sleep-label">Bedtime</div>
+            <div class="sleep-time set" id="bedDisplay">10:15</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px">PM</div>
+          </div>
+          <div class="sleep-card" onclick="openSleepModal('wake')">
+            <div class="sleep-icon">⏰</div>
+            <div class="sleep-label">Wake Up</div>
+            <div class="sleep-time set" id="wakeDisplay">6:30</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px">AM</div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg3);border-radius:10px;padding:14px;margin-bottom:14px;">
+          <div style="font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">SLEEP QUALITY LOG</div>
+          <div class="mood-row">
+            <div class="mood-btn" id="sq1" onclick="setSleepQ(1)">😫<div class="mood-label">Awful</div></div>
+            <div class="mood-btn" id="sq2" onclick="setSleepQ(2)">😕<div class="mood-label">Poor</div></div>
+            <div class="mood-btn selected" id="sq3" onclick="setSleepQ(3)">😐<div class="mood-label">OK</div></div>
+            <div class="mood-btn" id="sq4" onclick="setSleepQ(4)">😊<div class="mood-label">Good</div></div>
+            <div class="mood-btn" id="sq5" onclick="setSleepQ(5)">🌟<div class="mood-label">Great</div></div>
+          </div>
+        </div>
+
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;">THIS WEEK</div>
+        <div id="sleepWeek" style="display:flex;gap:8px;justify-content:space-between;">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+
+  <!-- POWER BOARD TAB -->
+  <div class="section" id="section-board">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="icon">⚡</span> POWER LIST</div>
+        <button class="btn btn-ghost" onclick="openPowerModal()" style="padding:6px 10px;font-size:11px;">+ ADD</button>
+      </div>
+      <div style="padding:8px 16px;font-size:11px;color:var(--text-muted);">
+        Non-negotiables for today. Check off as you go.
+      </div>
+      <div class="card-body" id="fullPowerList">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- Full Leaderboard -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="icon">▲</span> POWER BOARD</div>
+        <span class="chip">All-time</span>
+      </div>
+      <div class="card-body" style="padding:8px 16px;">
+        <div class="lb-item">
+          <div class="lb-rank gold">1</div>
+          <div class="lb-avatar" style="color:#FFD60A;border:2px solid #FFD60A;">CD</div>
+          <div class="lb-name">Celina D</div>
+          <div class="lb-pts">2,341 pts</div>
+        </div>
+        <div class="lb-item">
+          <div class="lb-rank you">2</div>
+          <div class="lb-avatar you">LS</div>
+          <div class="lb-name you">Lina S · YOU</div>
+          <div class="lb-pts you">2,108 pts</div>
+        </div>
+        <div class="lb-item">
+          <div class="lb-rank">3</div>
+          <div class="lb-avatar" style="color:#aaa;border:2px solid #444;">AC</div>
+          <div class="lb-name">Alex C</div>
+          <div class="lb-pts">1,987 pts</div>
+        </div>
+        <div class="lb-item">
+          <div class="lb-rank">4</div>
+          <div class="lb-avatar" style="color:#aaa;border:2px solid #444;">DJ</div>
+          <div class="lb-name">Diya J</div>
+          <div class="lb-pts">1,845 pts</div>
+        </div>
+        <div class="lb-item">
+          <div class="lb-rank">5</div>
+          <div class="lb-avatar" style="color:#aaa;border:2px solid #444;">JY</div>
+          <div class="lb-name">Jordan Y</div>
+          <div class="lb-pts">1,402 pts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item" onclick="switchNav('feed')">
+    <div class="nav-icon">📋</div>
+    Feed
+  </div>
+  <div class="nav-item active" onclick="switchNav('you')">
+    <div class="nav-icon">✦</div>
+    YOU
+  </div>
+  <div class="nav-center">＋</div>
+  <div class="nav-item" onclick="switchNav('groups')">
+    <div class="nav-icon">👥</div>
+    Groups
+  </div>
+  <div class="nav-item" onclick="switchNav('profile')">
+    <div class="nav-icon">👤</div>
+    Profile
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL: Add Goal -->
+<div class="modal-overlay" id="goalModal">
+  <div class="modal">
+    <div class="modal-title">🎯 NEW GOAL <span class="modal-close" onclick="closeModal('goalModal')">✕</span></div>
+    <div class="input-row"><input type="text" id="goalName" placeholder="Goal name e.g. Run a 5K"></div>
+    <div class="input-row" style="gap:8px;">
+      <input type="text" id="goalTarget" placeholder="Target e.g. 5/5">
+      <input type="text" id="goalDeadline" placeholder="Deadline e.g. May 1">
+    </div>
+    <button class="btn btn-red btn-full" onclick="addGoal()" style="margin-top:6px;">Add Goal</button>
+  </div>
+</div>
+
+<!-- MODAL: Add Power Item -->
+<div class="modal-overlay" id="powerModal">
+  <div class="modal">
+    <div class="modal-title">⚡ ADD TO LIST <span class="modal-close" onclick="closeModal('powerModal')">✕</span></div>
+    <div class="input-row"><input type="text" id="powerText" placeholder="e.g. Send 2 internship emails"></div>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Priority</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost" id="pHigh" onclick="setPriority('high')" style="border-color:#D32F2F;color:#FF3B30;flex:1">🔴 High</button>
+        <button class="btn btn-ghost" id="pMed" onclick="setPriority('med')" style="flex:1">🟡 Med</button>
+        <button class="btn btn-ghost" id="pLow" onclick="setPriority('low')" style="flex:1">⚪ Low</button>
+      </div>
+    </div>
+    <button class="btn btn-red btn-full" onclick="addPowerItem()">Add to List</button>
+  </div>
+</div>
+
+<!-- MODAL: Sleep -->
+<div class="modal-overlay" id="sleepModal">
+  <div class="modal">
+    <div class="modal-title" id="sleepModalTitle">🛏 SET BEDTIME <span class="modal-close" onclick="closeModal('sleepModal')">✕</span></div>
+    <input type="time" id="sleepTimeInput" value="22:15" style="margin-bottom:14px;">
+    <button class="btn btn-red btn-full" onclick="saveSleepTime()">Set Time</button>
+  </div>
+</div>
+
+<!-- MODAL: Routine Edit -->
+<div class="modal-overlay" id="routineModal">
+  <div class="modal">
+    <div class="modal-title" id="routineModalTitle">☀ EDIT ROUTINE <span class="modal-close" onclick="closeModal('routineModal')">✕</span></div>
+    <div style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">Add a new step to your routine.</div>
+    <div class="input-row">
+      <input type="time" id="routineTime" placeholder="Time" style="max-width:110px;">
+      <input type="text" id="routineStep" placeholder="e.g. Cold shower — 5 min">
+    </div>
+    <button class="btn btn-red btn-full" onclick="addRoutineStep()">Add Step</button>
+  </div>
+</div>
+
+<script>
+// STATE
+let powerItems = [
+  { text: 'Send 2 internship cold emails', priority: 'high', done: false },
+  { text: 'Finish econ problem set', priority: 'high', done: false },
+  { text: 'Call mom', priority: 'med', done: true },
+  { text: 'Gym — leg day', priority: 'med', done: true },
+  { text: 'Read 20 pages', priority: 'low', done: false },
+];
+let selectedPriority = 'high';
+let gratCount = 1;
+let currentSleepType = 'bed';
+let bedTime = '10:15 PM';
+let wakeTime = '6:30 AM';
+let currentRoutineType = 'morning';
+
+const affirmations = [
+  '"She built her empire one disciplined day at a time."',
+  '"Rest is a weapon, not a weakness."',
+  '"Your future self is watching. Make her proud."',
+  '"Consistency over intensity. Every. Single. Day."',
+  '"You don\'t have to feel ready. You just have to start."',
+  '"The most important relationship is the one you have with yourself."',
+  '"Do it scared. Do it tired. Just don\'t quit."',
+  '"She\'s not lucky. She\'s just been consistent longer."',
+];
+
+const gratPrompts = [
+  '"What\'s one thing that\'s going right for you right now, no matter how small?"',
+  '"Name someone who made your week better. Why?"',
+  '"What\'s a challenge you faced recently that made you stronger?"',
+  '"What part of your body are you grateful for today?"',
+  '"What\'s a simple pleasure you enjoyed today?"',
+];
+
+// INIT
+function init() {
+  renderPowerList();
+  renderSleepWeek();
+  setRing(68);
+  document.getElementById('affirmBox').onclick = refreshAffirm;
+}
+
+// TABS
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('section-' + tab).classList.add('active');
+}
+
+function switchNav(n) {
+  if (n === 'you') return;
+  showToast('Navigate to ' + n.charAt(0).toUpperCase() + n.slice(1));
+}
+
+// TOAST
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// RING
+function setRing(score) {
+  const circumference = 251;
+  const offset = circumference - (score / 100) * circumference;
+  document.getElementById('ringFill').style.strokeDashoffset = offset;
+  document.getElementById('ringScore').textContent = score;
+}
+
+// MOOD
+function setMood(el, emoji, label) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('moodSaved').textContent = emoji + ' ' + label;
+  document.getElementById('moodSaved').className = 'chip red';
+  showToast('Mood logged: ' + label);
+}
+
+// AFFIRMATION
+function refreshAffirm() {
+  const a = affirmations[Math.floor(Math.random() * affirmations.length)];
+  document.getElementById('affirmText').textContent = a;
+}
+
+// POWER LIST
+function renderPowerList() {
+  const doneCount = powerItems.filter(p => p.done).length;
+  document.getElementById('powerCount').textContent = doneCount + '/' + powerItems.length;
+
+  // Quick (today tab)
+  const ql = document.getElementById('quickPowerList');
+  ql.innerHTML = '';
+  powerItems.forEach((item, i) => {
+    ql.innerHTML += `<div class="power-item ${item.done ? 'power-done' : ''}" onclick="togglePower(${i})">
+      <div class="power-priority ${item.priority === 'high' ? 'p-high' : item.priority === 'med' ? 'p-med' : 'p-low'}"></div>
+      <div class="power-text">${item.text}</div>
+      <div class="power-check">${item.done ? '✓' : ''}</div>
+    </div>`;
+  });
+
+  
+  
+}
+
+function togglePower(i) {
+  powerItems[i].done = !powerItems[i].done;
+  renderPowerList();
+  const pts = powerItems.filter(p => p.done).length * 5;
+  showToast(powerItems[i].done ? '✓ Task done! +5pts' : 'Unmarked');
+  updateScore();
+}
+
+function updateScore() {
+  const done = powerItems.filter(p => p.done).length;
+  const total = powerItems.length;
+  const score = Math.round(40 + (done / total) * 30 + (gratCount / 3) * 15 + 10);
+  setRing(Math.min(score, 100));
+  document.getElementById('totalScore').textContent = score + ' pts';
+  document.getElementById('powerCount').textContent = done + '/' + total;
+}
+
+// GRATITUDE
+let gratInput2 = '';
+let gratInput3 = '';
+function addGratitude() {
+  const val = document.getElementById('gratInput').value.trim();
+  if (!val) return;
+  if (gratCount === 1) {
+    document.getElementById('grat2').style.display = 'block';
+    document.getElementById('grat2').innerHTML = `<div class="journal-date">GRATEFUL FOR #2</div><div class="journal-text">${val}</div>`;
+    document.getElementById('grat2').className = 'journal-entry today';
+    gratCount = 2;
+    document.getElementById('gratChip').textContent = '2/3 done';
+    document.getElementById('gratBar').style.width = '66%';
+  } else if (gratCount === 2) {
+    document.getElementById('grat3').style.display = 'block';
+    document.getElementById('grat3').innerHTML = `<div class="journal-date">GRATEFUL FOR #3</div><div class="journal-text">${val}</div>`;
+    document.getElementById('grat3').className = 'journal-entry today';
+    gratCount = 3;
+    document.getElementById('gratChip').textContent = '3/3 ✓';
+    document.getElementById('gratChip').className = 'chip red';
+    document.getElementById('gratBar').style.width = '100%';
+    document.getElementById('gratInputArea').style.display = 'none';
+    document.getElementById('gratPrompt').textContent = gratPrompts[Math.floor(Math.random() * gratPrompts.length)];
+    showToast('Gratitude complete! +15pts 🙏');
+  }
+  document.getElementById('gratInput').value = '';
+  updateScore();
+}
+
+// JOURNAL
+function saveJournal() {
+  showToast('Journal saved ✓');
+  document.getElementById('journalBar').style.width = '100%';
+}
+
+function expandEntry(el) {
+  showToast('Entry expanded');
+}
+
+// GOALS
+function openGoalModal() { openModal('goalModal'); }
+function addGoal() {
+  const name = document.getElementById('goalName').value.trim();
+  const target = document.getElementById('goalTarget').value.trim() || '0/1';
+  const deadline = document.getElementById('goalDeadline').value.trim() || 'No deadline';
+  if (!name) return;
+  const list = document.getElementById('goalsList');
+  const div = document.createElement('div');
+  div.className = 'goal-item';
+  div.innerHTML = `<div class="goal-top"><div class="goal-name">🎯 ${name}</div><div class="goal-progress-text">${target}</div></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+    <div class="goal-deadline">${deadline}</div>`;
+  list.appendChild(div);
+  document.getElementById('goalName').value = '';
+  document.getElementById('goalTarget').value = '';
+  document.getElementById('goalDeadline').value = '';
+  closeModal('goalModal');
+  showToast('Goal added! 🎯');
+}
+
+// POWER MODAL
+function openPowerModal() { setPriority('high'); openModal('powerModal'); }
+function setPriority(p) {
+  selectedPriority = p;
+  ['pHigh','pMed','pLow'].forEach(id => {
+    document.getElementById(id).style.borderColor = 'var(--border)';
+    document.getElementById(id).style.color = 'var(--text-dim)';
+  });
+  const map = { high: 'pHigh', med: 'pMed', low: 'pLow' };
+  document.getElementById(map[p]).style.borderColor = 'var(--red)';
+  document.getElementById(map[p]).style.color = 'var(--red-bright)';
+}
+function addPowerItem() {
+  const text = document.getElementById('powerText').value.trim();
+  if (!text) return;
+  powerItems.push({ text, priority: selectedPriority, done: false });
+  document.getElementById('powerText').value = '';
+  closeModal('powerModal');
+  renderPowerList();
+  showToast('Added to Power List ⚡');
+}
+
+// SLEEP
+function openSleepModal(type) {
+  currentSleepType = type;
+  document.getElementById('sleepModalTitle').innerHTML = (type === 'bed' ? '🛏 SET BEDTIME' : '⏰ SET WAKE UP') + ' <span class="modal-close" onclick="closeModal(\'sleepModal\')">✕</span>';
+  document.getElementById('sleepTimeInput').value = type === 'bed' ? '22:15' : '06:30';
+  openModal('sleepModal');
+}
+function saveSleepTime() {
+  const val = document.getElementById('sleepTimeInput').value;
+  const [h, m] = val.split(':');
+  const hour = parseInt(h);
+  const min = m;
+  const isPM = hour >= 12;
+  const display = `${hour > 12 ? hour - 12 : hour === 0 ? 12 : hour}:${min}`;
+  if (currentSleepType === 'bed') {
+    document.getElementById('bedDisplay').textContent = display;
+  } else {
+    document.getElementById('wakeDisplay').textContent = display;
+  }
+  closeModal('sleepModal');
+  showToast('Sleep time set ✓');
+}
+function setSleepQ(n) {
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById('sq' + i).classList.toggle('selected', i === n);
+  }
+  showToast('Sleep quality logged');
+}
+
+// SLEEP WEEK
+function renderSleepWeek() {
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const hrs = [7.5, 6.5, 8, 7, 7.5, 9, 6];
+  const today = 4; // Friday
+  const wrap = document.getElementById('sleepWeek');
+  wrap.innerHTML = days.map((d, i) => {
+    const pct = Math.round((hrs[i] / 10) * 100);
+    const isToday = i === today;
+    return `<div style="flex:1;text-align:center;">
+      <div style="height:60px;background:var(--bg4);border-radius:4px;position:relative;overflow:hidden;margin-bottom:4px;">
+        <div style="position:absolute;bottom:0;width:100%;height:${pct}%;background:${isToday ? 'var(--red)' : 'var(--bg3)'};border-radius:4px;transition:height 1s;"></div>
+      </div>
+      <div style="font-size:9px;color:${isToday ? 'var(--red-bright)' : 'var(--text-muted)'};">${d}</div>
+      <div style="font-size:9px;color:var(--text-dim);font-family:'DM Mono',monospace;">${hrs[i]}h</div>
+    </div>`;
+  }).join('');
+}
+
+// ROUTINE
+function openRoutineModal(type) {
+  currentRoutineType = type;
+  document.getElementById('routineModalTitle').innerHTML = (type === 'morning' ? '☀ EDIT MORNING' : '🌙 EDIT EVENING') + ' <span class="modal-close" onclick="closeModal(\'routineModal\')">✕</span>';
+  openModal('routineModal');
+}
+function addRoutineStep() {
+  const time = document.getElementById('routineTime').value;
+  const step = document.getElementById('routineStep').value.trim();
+  if (!step) return;
+  const [h, m] = time ? time.split(':') : ['', ''];
+  const displayTime = time ? `${parseInt(h) > 12 ? parseInt(h) - 12 : h}:${m}` : '--:--';
+  const target = document.getElementById(currentRoutineType + 'Routine');
+  const div = document.createElement('div');
+  div.className = 'routine-step';
+  div.innerHTML = `<span class="routine-time">${displayTime}</span><div class="routine-dot"></div><span class="routine-label">${step}</span>`;
+  target.appendChild(div);
+  document.getElementById('routineTime').value = '';
+  document.getElementById('routineStep').value = '';
+  closeModal('routineModal');
+  showToast('Step added to routine ✓');
+}
+
+// MODALS
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+
+init();
+</script>
+</body>
+</html>
